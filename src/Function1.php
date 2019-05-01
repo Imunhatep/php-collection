@@ -1,27 +1,14 @@
 <?php
 
-/*
- * This file is part of Collection, library with functional structures for PHP.
- *
- * (c) Marcello Duarte <marcello.duarte@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+namespace Collection;
 
-namespace Collection\Immutable;
-
-use Collection\Ops\Applicative;
-use Collection\Ops\Show;
 use Collection\Ops\Function1\Function1ApplicativeOps;
 use Collection\Ops\Function1\Function1EqOps;
 
-use function Collection\Functions\type\normaliseType;
-
-final class Function1 implements Kind, Applicative
+final class Function1 implements Any
 {
-    use Function1ApplicativeOps, Function1EqOps, Show;
-    const kind = "Function1";
+    use Function1ApplicativeOps, Function1EqOps;
+
     private $reflection;
     private $f;
 
@@ -31,6 +18,7 @@ final class Function1 implements Kind, Applicative
         $this->reflection = method_exists($f, '__invoke') ?
                             new \ReflectionMethod($f, '__invoke') :
                             new \ReflectionFunction($f);
+
         $this->guardCallableNumberOfParameters();
     }
 
@@ -83,8 +71,8 @@ final class Function1 implements Kind, Applicative
     public function toString(): string
     {
         return sprintf("Function1(%s=>%s)",
-            normaliseType($this->reflection->getParameters()[0]->getType()) ?: "?",
-            normaliseType($this->reflection->getReturnType()) ?: "?");
+            $this->reflection->getParameters()[0]->getType(),
+            $this->reflection->getReturnType());
     }
 
     public function getTypeArity(): int
@@ -95,14 +83,9 @@ final class Function1 implements Kind, Applicative
     public function getTypeVariables(): array
     {
         return [
-            normaliseType($this->reflection->getParameters()[0]->getType()) ?: "?",
-            normaliseType($this->reflection->getReturnType()) ?: "?"
+            $this->reflection->getParameters()[0]->getType(),
+            $this->reflection->getReturnType()
         ];
-    }
-
-    public function showType()
-    {
-        return "Function1";
     }
 
     private function invokeFunctionOnArg($arg)

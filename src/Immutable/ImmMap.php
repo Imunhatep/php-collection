@@ -7,6 +7,7 @@ use Collection\MapInterface;
 use Collection\Ops\Functor;
 use Collection\Ops\ImmMap\ImmMapEqOps;
 use Collection\Ops\ImmMap\ImmMapFunctorOps;
+use Collection\Tuple2;
 use PhpOption\Option;
 
 
@@ -34,7 +35,7 @@ final class ImmMap implements \ArrayAccess, Functor, \IteratorAggregate, MapInte
         }
     }
 
-    public function copy()
+    public function copy(): ImmMap
     {
         $copy = ImmMap();
         $copy->values = clone $this->values;
@@ -64,7 +65,10 @@ final class ImmMap implements \ArrayAccess, Functor, \IteratorAggregate, MapInte
         return $map;
     }
 
-    public function merge(ImmMap $m): ImmMap
+    /**
+     * @return self
+     */
+    public function merge(MapInterface $m): MapInterface
     {
         $mappings = clone $this->values;
 
@@ -111,6 +115,11 @@ final class ImmMap implements \ArrayAccess, Functor, \IteratorAggregate, MapInte
     }
 
     public function toString(): string
+    {
+        return (string) $this;
+    }
+
+    public function __toString(): string
     {
         $mappings = [];
         foreach ($this->values as $k) {

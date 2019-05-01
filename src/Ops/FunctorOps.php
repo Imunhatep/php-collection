@@ -3,6 +3,8 @@ namespace Collection\Ops;
 
 trait FunctorOps
 {
+    abstract function map(callable $f);
+
     /**
      * (A => B) => (F<A> => F<B>)
      */

@@ -16,7 +16,7 @@ final class Tuple1 implements Tuple
         $this->_1 = $v1;
     }
 
-    function swap(): Tuple1
+    function swap(): Tuple
     {
         return clone $this;
     }

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of Collection, library with functional structures for PHP.
+ * This file is part of Phunkie, library with functional structures for PHP.
  *
  * (c) Marcello Duarte <marcello.duarte@gmail.com>
  *
@@ -12,7 +12,6 @@
 namespace Collection\Ops\Function1;
 
 use Collection\Ops\FunctorOps;
-use Collection\Types\Kind;
 
 /**
  * @mixin \Collection\Types\Function1
@@ -20,12 +19,12 @@ use Collection\Types\Kind;
 trait Function1FunctorOps
 {
     use FunctorOps;
-    public function map(callable $f): Kind
+    public function map(callable $f): self
     {
         return $this->andThen($f);
     }
 
-    public function imap(callable $f,callable $g): Kind
+    public function imap(callable $f,callable $g): self
     {
         return $this->map($f);
     }

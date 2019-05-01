@@ -9,7 +9,7 @@ final class Unit implements Tuple
 {
     use TupleFunctorOps, TupleLike;
 
-    function swap(): Unit
+    function swap(): Tuple
     {
         return new Unit();
     }

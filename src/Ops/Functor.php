@@ -2,33 +2,35 @@
 
 namespace Collection\Ops;
 
+use Collection\Any;
+
 /**
  * Functor<F<A>>
  */
-interface Functor
+interface Functor extends Any
 {
     /**
      * (A => B) => F<B>
      */
-    public function map(callable $f);
+    function map(callable $f);
 
     /**
      * (A => B) => (F<A> => F<B>)
      */
-    public function lift($f): callable;
+    function lift($f): callable;
 
     /**
      * B => F<B>
      */
-    public function as($b);
+    function as($b);
 
     /**
      * () => F<Unit>
      */
-    public function void();
+    function void();
 
     /**
      * (A => B) => F<Pair<A,B>>
      */
-    public function zipWith($f);
+    function zipWith(callable $f);
 }

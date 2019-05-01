@@ -13,23 +13,11 @@ namespace Collection\Ops\ImmList;
 
 use BadMethodCallException;
 use Error;
-use function Collection\Functions\assertion\assertSameTypeAsCollectionType;
-use function Collection\Functions\immlist\concat;
-use function Collection\Functions\show\showArrayType;
-use Collection\PatternMatching\Match;
-use Collection\Types\ImmList;
-use Collection\Types\Option;
-use Collection\Types\Pair;
-use Exception;
 
-use function Collection\Functions\show\showType;
-use function Collection\Functions\show\showValue;
-use function Collection\PatternMatching\Referenced\ListNoTail;
-use function Collection\PatternMatching\Referenced\ListWithTail;
-use function \Collection\PatternMatching\Referenced\Failure as Invalid;
-use function \Collection\PatternMatching\Referenced\Success as Valid;
-use Collection\Utils\Traversable;
-use Collection\Utils\WithFilter;
+use Collection\Immutable\ImmList;
+use PhpOption\Option;
+use Collection\Tuple2;
+use Exception;
 
 /**
  * @mixin ImmList
@@ -92,7 +80,7 @@ trait ImmListOps
      * @param callable $condition
      * @return Traversable|ImmList
      */
-    public function filter(callable $condition): Traversable
+    public function filter(callable $condition): ImmList
     {
         return ImmList(...array_filter($this->toArray(), $condition));
     }
@@ -205,7 +193,7 @@ trait ImmListOps
 
     /**
      * @param ImmList<B> $list
-     * @return ImmList<Pair<A,B>>
+     * @return ImmList<Tuple2<A,B>>
      */
     public function zip(ImmList $list): ImmList
     {
@@ -213,9 +201,9 @@ trait ImmListOps
             $other = $list->toArray();
             reset($other);
             return $this->map(function($x) use (&$other) {
-                $pair = Pair($x, current($other));
+                $Tuple2 = Tuple2($x, current($other));
                 next($other);
-                return $pair;
+                return $Tuple2;
             });
         }
         return $list->zip($this);
@@ -223,16 +211,16 @@ trait ImmListOps
 
     /**
      * @param int $index
-     * @return Pair<ImmList<A>,ImmList<A>>
+     * @return Tuple2<ImmList<A>,ImmList<A>>
      */
-    public function splitAt(int $index): Pair { switch (true) {
-        case $index == 0:                    return Pair(Nil(), clone $this);
-        case $index >= count($this->toArray()): return Pair(clone $this, Nil());
-        default: return Pair(ImmList(...array_slice($this->toArray(), 0, $index)),
+    public function splitAt(int $index): Tuple2 { switch (true) {
+        case $index == 0:                    return Tuple2(Nil(), clone $this);
+        case $index >= count($this->toArray()): return Tuple2(clone $this, Nil());
+        default: return Tuple2(ImmList(...array_slice($this->toArray(), 0, $index)),
             ImmList(...array_slice($this->toArray(), $index))); }
     }
 
-    public function partition(callable $condition): Pair
+    public function partition(callable $condition): Tuple2
     {
         $trues = $falses = [];
         foreach ($this->toArray() as $value) { switch ($result = call_user_func($condition, $value)) {
@@ -240,7 +228,7 @@ trait ImmListOps
             case false: $falses[] = $value; break;
             default: throw $this->callableMustReturnBoolean($result); }
         }
-        return Pair(ImmList(...$trues), ImmList(...$falses));
+        return Tuple2(ImmList(...$trues), ImmList(...$falses));
     }
 
     private function callableMustReturnBoolean($result): Exception

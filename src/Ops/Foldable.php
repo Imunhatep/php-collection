@@ -1,7 +1,9 @@
 <?php
 namespace Collection\Ops;
 
-interface Foldable
+use Collection\Any;
+
+interface Foldable extends Any
 {
     public function foldLeft($initial); // curry -> (callable $f);
     public function foldRight($initial); // curry -> (callable $f);

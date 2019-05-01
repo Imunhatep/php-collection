@@ -18,18 +18,23 @@ trait TupleLike
         return $this->{$name};
     }
 
-    function toString(): string
+    function __toString(): string
     {
         return sprintf('(%s)', implode(',', $this->toArray()));
     }
 
+    function toString(): string
+    {
+        return (string) $this;
+    }
+
     function toArray(): array
     {
-        return $this->jsonSerialize();
+        return array_values(get_object_vars($this));
     }
 
     function jsonSerialize(): array
     {
-        return array_values(get_object_vars($this));
+        return $this->toArray();
     }
 }

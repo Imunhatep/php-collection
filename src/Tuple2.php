@@ -5,7 +5,7 @@ namespace Collection;
 
 use Collection\Ops\Tuple\TupleFunctorOps;
 
-final class Tuple2
+final class Tuple2 implements Tuple
 {
     use TupleFunctorOps, TupleLike;
 
@@ -18,7 +18,7 @@ final class Tuple2
         $this->_2 = $v2;
     }
 
-    function swap(): Tuple2
+    function swap(): Tuple
     {
         return new Tuple2($this->_2, $this->_1);
     }

@@ -1,24 +1,15 @@
 <?php
 
-/*
- * This file is part of Collection, library with functional structures for PHP.
- *
- * (c) Marcello Duarte <marcello.duarte@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace Collection\Ops\Function1;
 
-use Collection\Types\Function1;
-use Collection\Types\Kind;
+use Collection\Any;
+use Collection\Function1;
 
 trait Function1ApplicativeOps
 {
     use Function1FunctorOps;
 
-    public function pure($a): Kind
+    public function pure($a): self
     {
         return Function1($a);
     }
@@ -27,21 +18,36 @@ trait Function1ApplicativeOps
      * Function1<A,B> $this
      *
      * @param Function1<A, Function1<B,C>> $f
+     *
      * @return Function1<A,C>
      */
-    public function apply(Kind $f): Kind {
+    public function apply(callable $f): self
+    {
 
-        switch($f) {
-            case $f == None(): return None();
-            case $f instanceof Function1: return Function1(function($x) use ($f) {
-                return $f->invokeFunctionOnArg($this->invokeFunctionOnArg($x));
-            });
-            default: throw new \BadMethodCallException();
+        switch ($f) {
+            case $f == None():
+                return None();
+            case $f instanceof Function1:
+                return Function1(
+                    function ($x) use ($f) {
+                        return $f->invokeFunctionOnArg($this->invokeFunctionOnArg($x));
+                    }
+                );
+            default:
+                throw new \BadMethodCallException();
         }
     }
 
-    public function map2(Kind $fb, callable $f): Kind
+    public function map2(Any $fb, callable $f): self
     {
-        return $this->apply($fb->map(function($b) use ($f) { return function($a) use ($f, $b) { return $f($a, $b);};}));
+        return $this->apply(
+            $fb->map(
+                function ($b) use ($f) {
+                    return function ($a) use ($f, $b) {
+                        return $f($a, $b);
+                    };
+                }
+            )
+        );
     }
 }
